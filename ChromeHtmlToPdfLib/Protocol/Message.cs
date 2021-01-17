@@ -3,7 +3,7 @@
 //
 // Author: Kees van Spelde <sicos2002@hotmail.com>
 //
-// Copyright (c) 2017-2018 Magic-Sessions. (www.magic-sessions.com)
+// Copyright (c) 2017-2019 Magic-Sessions. (www.magic-sessions.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -68,6 +68,18 @@ namespace ChromeHtmlToPdfLib.Protocol
         public void AddParameter(string name, object value)
         {
             Parameters.Add(name, value);   
+        }
+        #endregion
+
+        #region FromJson
+        /// <summary>
+        /// Returns this object deserialized from the given <paramref name="json"/> string
+        /// </summary>
+        /// <param name="json"></param>
+        /// <returns></returns>
+        public new static Message FromJson(string json)
+        {
+            return JsonConvert.DeserializeObject<Message>(json);
         }
         #endregion
     }

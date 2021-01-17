@@ -1,9 +1,9 @@
 ﻿//
-// Evaluate.cs
+// Fetch.cs
 //
 // Author: Kees van Spelde <sicos2002@hotmail.com>
 //
-// Copyright (c) 2017-2019 Magic-Sessions. (www.magic-sessions.com)
+// Copyright (c) 2014-2020 Magic-Sessions. (www.magic-sessions.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,24 +24,22 @@
 // THE SOFTWARE.
 //
 
+
 using Newtonsoft.Json;
 
 namespace ChromeHtmlToPdfLib.Protocol
 {
     /// <summary>
-    /// 
+    /// The JSON object that is returned when the <b>Fetch.enable</b> is activated in Chrome
     /// </summary>
-    public class Evaluate : MessageBase
+    public class Fetch
     {
         #region Properties
-        [JsonProperty("result")]
-        public EvaluateResult Result { get; set; }
-
-        /// <summary>
-        /// The method that we want to execute in Chrome
-        /// </summary>
-        [JsonProperty("method")]
+        [JsonProperty("method")] 
         public string Method { get; set; }
+
+        [JsonProperty("params")] 
+        public FetchParams Params { get; set; }
         #endregion
 
         #region FromJson
@@ -50,35 +48,67 @@ namespace ChromeHtmlToPdfLib.Protocol
         /// </summary>
         /// <param name="json"></param>
         /// <returns></returns>
-        public new static Evaluate FromJson(string json)
+        public static Fetch FromJson(string json)
         {
-            return JsonConvert.DeserializeObject<Evaluate>(json);
+            return JsonConvert.DeserializeObject<Fetch>(json);
         }
         #endregion
     }
 
     /// <summary>
-    /// Part of the <see cref="Evaluate"/> class
+    /// Part of the <see cref="Fetch"/> class
     /// </summary>
-    public class EvaluateResult
-    {
-        #region Propreties
-        [JsonProperty("result")]
-        public EvaluateInnerResult Result { get; set; }
-        #endregion
-    }
-    
-    /// <summary>
-    /// Part of the <see cref="EvaluateResult"/> class
-    /// </summary>
-    public class EvaluateInnerResult
+    public class FetchParams
     {
         #region Properties
-        [JsonProperty("type")]
-        public string Type { get; set; }
+        [JsonProperty("requestId")] 
+        public string RequestId { get; set; }
 
-        [JsonProperty("value")]
-        public string Value { get; set; }
+        [JsonProperty("request")] 
+        public FetchRequest Request { get; set; }
+
+        [JsonProperty("frameId")] 
+        public string FrameId { get; set; }
+
+        [JsonProperty("resourceType")] 
+        public string ResourceType { get; set; }
+
+        [JsonProperty("networkId")] 
+        public string NetworkId { get; set; }
+        #endregion
+    }
+
+    /// <summary>
+    /// Part of the <see cref="Fetch"/> class
+    /// </summary>
+    public class FetchRequest
+    {
+        #region Properties
+        [JsonProperty("url")] 
+        public string Url { get; set; }
+
+        [JsonProperty("method")] 
+        public string Method { get; set; }
+
+        [JsonProperty("headers")] 
+        public FetchHeaders Headers { get; set; }
+
+        [JsonProperty("initialPriority")] 
+        public string InitialPriority { get; set; }
+
+        [JsonProperty("referrerPolicy")] 
+        public string ReferrerPolicy { get; set; }
+        #endregion
+    }
+
+    /// <summary>
+    /// Part of the <see cref="FetchRequest"/> class
+    /// </summary>
+    public class FetchHeaders
+    {
+        #region Properties
+        [JsonProperty("Accept")] 
+        public string Accept { get; set; }
         #endregion
     }
 }

@@ -1,5 +1,5 @@
 ﻿//
-// MessageBase.cs
+// RegularExpression.cs
 //
 // Author: Kees van Spelde <sicos2002@hotmail.com>
 //
@@ -24,43 +24,39 @@
 // THE SOFTWARE.
 //
 
-using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
-namespace ChromeHtmlToPdfLib.Protocol
+namespace ChromeHtmlToPdfLib.Helpers
 {
-    /// <summary>
-    /// The base for a <see cref="Message"/>
-    /// </summary>
-    public class MessageBase
+    internal static class RegularExpression
     {
-        #region Properties
+        #region IsRegExMatch
         /// <summary>
-        /// The message id
+        /// Returns <c>true</c> when a match in <paramref name="patterns"/> has been
+        /// found for <paramref name="value"/>
         /// </summary>
-        [JsonProperty("id")]
-        public int Id { get; set; }
-        #endregion
-
-        #region FromJson
-        /// <summary>
-        /// Returns this object deserialized from the given <paramref name="json"/> string
-        /// </summary>
-        /// <param name="json"></param>
+        /// <param name="patterns">A list with regular expression</param>
+        /// <param name="value">The string where to find the match</param>
+        /// <param name="matchedPattern"></param>
         /// <returns></returns>
-        public static MessageBase FromJson(string json)
+        public static bool IsRegExMatch(IEnumerable<string> patterns, string value, out string matchedPattern)
         {
-            return JsonConvert.DeserializeObject<MessageBase>(json);
-        }
-        #endregion
+            matchedPattern = string.Empty;
 
-        #region ToJson
-        /// <summary>
-        /// Returns this object as a JSON string
-        /// </summary>
-        /// <returns></returns>
-        public string ToJson()
-        {
-            return JsonConvert.SerializeObject(this);
+            if (patterns == null)
+                return false;
+
+            foreach (var pattern in patterns)
+            {
+                if (Regex.IsMatch(value, pattern, RegexOptions.IgnoreCase))
+                {
+                    matchedPattern = Regex.Unescape(pattern);
+                    return true;
+                }
+            }
+
+            return false;
         }
         #endregion
     }

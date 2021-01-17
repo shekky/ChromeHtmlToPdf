@@ -3,7 +3,7 @@
 //
 // Author: Kees van Spelde <sicos2002@hotmail.com>
 //
-// Copyright (c) 2017-2018 Magic-Sessions. (www.magic-sessions.com)
+// Copyright (c) 2017-2019 Magic-Sessions. (www.magic-sessions.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -44,10 +44,7 @@ namespace ChromeHtmlToPdfLib.Protocol
         /// <summary>
         /// Returns <see cref="PrintToPdfResult.Data"/> as array of bytes
         /// </summary>
-        public byte[] Bytes
-        {
-            get { return Convert.FromBase64String(Result.Data); }    
-        }
+        public byte[] Bytes => Convert.FromBase64String(Result.Data);
         #endregion
 
         #region FromJson

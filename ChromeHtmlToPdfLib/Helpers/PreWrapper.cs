@@ -3,7 +3,7 @@
 //
 // Author: Kees van Spelde <sicos2002@hotmail.com>
 //
-// Copyright (c) 2017-2018 Magic-Sessions. (www.magic-sessions.com)
+// Copyright (c) 2017-2019 Magic-Sessions. (www.magic-sessions.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -28,6 +28,10 @@ using System;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Web;
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
 
 namespace ChromeHtmlToPdfLib.Helpers
 {
@@ -43,18 +47,20 @@ namespace ChromeHtmlToPdfLib.Helpers
         private readonly Stream _logStream;
 
         /// <summary>
-        ///     An unique id that can be used to identify the logging of the converter when
-        ///     calling the code from multiple threads and writing all the logging to the same file
-        /// </summary>
-        public string InstanceId { get; set; }
-
-        /// <summary>
         ///     The temp folder
         /// </summary>
         private readonly DirectoryInfo _tempDirectory;
         #endregion
 
         #region Properties
+        /// <summary>
+        ///     An unique id that can be used to identify the logging of the converter when
+        ///     calling the code from multiple threads and writing all the logging to the same file
+        /// </summary>
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
+        // ReSharper disable once MemberCanBePrivate.Global
+        public string InstanceId { get; set; }
+
         /// <summary>
         ///     When set then this option will be used for white space wrapping
         /// </summary>
@@ -101,8 +107,7 @@ namespace ChromeHtmlToPdfLib.Helpers
         /// </summary>
         /// <param name="tempDirectory">When set then this directory will be used for temporary files</param>
         /// <param name="logStream"></param>
-        public PreWrapper(DirectoryInfo tempDirectory = null,
-                          Stream logStream = null)
+        public PreWrapper(DirectoryInfo tempDirectory, Stream logStream)
         {
             _tempDirectory = tempDirectory;
             _logStream = logStream;
@@ -124,9 +129,35 @@ namespace ChromeHtmlToPdfLib.Helpers
             
             WriteToLog($"Reading text file '{inputFile}'");
 
-            var streamReader = encoding != null
-                ? new StreamReader(inputFile, encoding)
-                : new EncodingTools.Detector().OpenTextFile(inputFile);
+            if (encoding == null)
+            {
+                Ude.CharsetDetector charsetDetector = new Ude.CharsetDetector();
+                using (var fileStream = File.OpenRead(inputFile))
+                {
+                    WriteToLog("Trying to detect encoding");
+                    charsetDetector.Feed(fileStream);
+                    charsetDetector.DataEnd();
+                    if (charsetDetector.Charset != null)
+                    {
+                        try
+                        {
+                            encoding = Encoding.GetEncoding(charsetDetector.Charset);
+                        }
+                        catch 
+                        {
+                            Console.WriteLine("Detection failed assuming standard encoding");
+                            encoding = Encoding.Default;
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Detection failed assuming standard encoding");
+                        encoding = Encoding.Default;
+                    }
+                }
+            }
+
+            var streamReader = new StreamReader(inputFile, encoding);
 
             WriteToLog($"File is '{streamReader.CurrentEncoding.WebName}' encoded");
 
@@ -155,7 +186,11 @@ namespace ChromeHtmlToPdfLib.Helpers
                 writer.WriteLine("<pre>");
 
                 while (!streamReader.EndOfStream)
-                    writer.WriteLine(streamReader.ReadLine());
+                {
+                    var line = streamReader.ReadLine();
+                    if (line != null)
+                        writer.WriteLine(HttpUtility.HtmlEncode(line));
+                }
 
                 writer.WriteLine("</pre>");
                 writer.WriteLine("</body>");
@@ -175,12 +210,20 @@ namespace ChromeHtmlToPdfLib.Helpers
         /// <param name="message">The message to write</param>
         private void WriteToLog(string message)
         {
-            if (_logStream == null) return;
-            var line = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss.fff") + (InstanceId != null ? " - " + InstanceId : string.Empty) + " - " +
-                       message + Environment.NewLine;
-            var bytes = Encoding.UTF8.GetBytes(line);
-            _logStream.Write(bytes, 0, bytes.Length);
-            _logStream.Flush();
+            try
+            {
+                if (_logStream == null || !_logStream.CanWrite) return;
+                var line = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss.fff") +
+                           (InstanceId != null ? " - " + InstanceId : string.Empty) + " - " +
+                           message + Environment.NewLine;
+                var bytes = Encoding.UTF8.GetBytes(line);
+                _logStream.Write(bytes, 0, bytes.Length);
+                _logStream.Flush();
+            }
+            catch (ObjectDisposedException)
+            {
+                // Ignore
+            }
         }
         #endregion
     }

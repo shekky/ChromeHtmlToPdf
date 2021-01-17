@@ -1,6 +1,6 @@
 ## What is ChromeHtmlToPdf?
 
-ChromeHtmlToPdf is a 100% managed C# .NET library and console application that can be used to convert HTML to PDF format with the use of Google Chrome
+ChromeHtmlToPdf is a 100% managed C# .NETStandard 2.0 library and .NET Core 3.0 console application that can be used to convert HTML to PDF format with the use of Google Chrome
 
 ## Why did I make this?
 
@@ -8,7 +8,7 @@ I needed a replacement for wkHtmlToPdf, a great tool but the activity on this pr
 
 ## License Information
 
-ChromeHtmlToPdf is Copyright (C)2017-2019 Kees van Spelde and is licensed under the MIT license:
+ChromeHtmlToPdf is Copyright (C)2017-2020 Kees van Spelde and is licensed under the MIT license:
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
@@ -58,6 +58,8 @@ System.Diagnostics.Process.Start(@"c:\google.pdf");
 
 Thats it.
 
+If you get strange errors when starting Chrome than this is due to the account that is used to run your site. I had a simular problem and solved it by hosting ChromeHtmlToPdf in a Windows service and making calls to it with a WCF service.
+
 ### Converting from the command line
 
 ```csharp
@@ -68,6 +70,13 @@ ChromeHtmlToPdf.exe --input https://www.google.com --output c:\google.pdf
 ### Console app exit codes
 
 0 = successful, 1 = an error occurred
+
+### Pre compiled binaries
+
+You can find pre compiled binaries for Windows, Unix and macOS over here 
+
+https://github.com/Sicos1977/ChromeHtmlToPdf/releases/download/2.0.11/ChromeHtmlToPdf_211.zip
+https://github.com/Sicos1977/ChromeHtmlToPdf/releases/download/2.1.6/ChromeHtmlToPdf_216.zip
 
 Core Team
 =========

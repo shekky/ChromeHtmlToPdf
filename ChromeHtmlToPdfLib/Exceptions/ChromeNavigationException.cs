@@ -1,9 +1,9 @@
 ﻿//
-// MessageBase.cs
+// ChromeNavigationException.cs
 //
 // Author: Kees van Spelde <sicos2002@hotmail.com>
 //
-// Copyright (c) 2017-2019 Magic-Sessions. (www.magic-sessions.com)
+// Copyright (c) 2014-2020 Magic-Sessions. (www.magic-sessions.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,44 +24,23 @@
 // THE SOFTWARE.
 //
 
-using Newtonsoft.Json;
+using System;
+using System.Runtime.Serialization;
 
-namespace ChromeHtmlToPdfLib.Protocol
+namespace ChromeHtmlToPdfLib.Exceptions
 {
     /// <summary>
-    /// The base for a <see cref="Message"/>
+    /// Raised when an error is returned when navigation to a page in Chrome
     /// </summary>
-    public class MessageBase
+    [Serializable]
+    public class ChromeNavigationException : Exception
     {
-        #region Properties
-        /// <summary>
-        /// The message id
-        /// </summary>
-        [JsonProperty("id")]
-        public int Id { get; set; }
-        #endregion
+        protected ChromeNavigationException(SerializationInfo info, StreamingContext context) : base(info, context) { }
 
-        #region FromJson
-        /// <summary>
-        /// Returns this object deserialized from the given <paramref name="json"/> string
-        /// </summary>
-        /// <param name="json"></param>
-        /// <returns></returns>
-        public static MessageBase FromJson(string json)
-        {
-            return JsonConvert.DeserializeObject<MessageBase>(json);
-        }
-        #endregion
+        internal ChromeNavigationException() { }
 
-        #region ToJson
-        /// <summary>
-        /// Returns this object as a JSON string
-        /// </summary>
-        /// <returns></returns>
-        public string ToJson()
-        {
-            return JsonConvert.SerializeObject(this);
-        }
-        #endregion
+        internal ChromeNavigationException(string message) : base(message) { }
+
+        internal ChromeNavigationException(string message, Exception innerException) : base(message, innerException) { }
     }
 }

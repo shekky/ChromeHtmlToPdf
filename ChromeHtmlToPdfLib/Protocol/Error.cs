@@ -3,7 +3,7 @@
 //
 // Author: Kees van Spelde <sicos2002@hotmail.com>
 //
-// Copyright (c) 2017-2018 Magic-Sessions. (www.magic-sessions.com)
+// Copyright (c) 2017-2019 Magic-Sessions. (www.magic-sessions.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -38,7 +38,7 @@ namespace ChromeHtmlToPdfLib.Protocol
         /// <see cref="InnerError"/>
         /// </summary>
         [JsonProperty("error")]
-        public InnerError InnerError { get; set; }
+        public ErrorInnerError InnerError { get; set; }
         #endregion
 
         #region FromJson
@@ -57,7 +57,7 @@ namespace ChromeHtmlToPdfLib.Protocol
     /// <summary>
     /// The inner error
     /// </summary>
-    public class InnerError
+    public class ErrorInnerError
     {
         #region Properties
         /// <summary>

@@ -3,7 +3,7 @@
 //
 // Author: Kees van Spelde <sicos2002@hotmail.com>
 //
-// Copyright (c) 2017-2018 Magic-Sessions. (www.magic-sessions.com)
+// Copyright (c) 2017-2019 Magic-Sessions. (www.magic-sessions.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -44,7 +44,7 @@ namespace ChromeHtmlToPdfLib.Protocol
         /// The parameters used with this <see cref="Method"/>
         /// </summary>
         [JsonProperty("params")]
-        public Params Params { get; set; }
+        public PageEventParams Params { get; set; }
         #endregion
 
         #region FromJson
@@ -60,7 +60,10 @@ namespace ChromeHtmlToPdfLib.Protocol
         #endregion
     }
 
-    public class Params
+    /// <summary>
+    /// Part of the <see cref="PageEvent"/> class
+    /// </summary>
+    public class PageEventParams
     {
         #region Properties
         /// <summary>

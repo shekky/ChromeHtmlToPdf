@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ChromeHtmlToPdf": {
+      "commandName": "Project",
+      "commandLineArgs": "--input \"d:\\test.html\" --output d:\\test.pdf --media-load-timeout 5000 --image-resize  --sanitize-html --paper-format FitPageToContent"
+    }
+  }
+}
